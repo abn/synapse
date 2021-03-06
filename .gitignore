@@ -6,6 +6,7 @@
 *.egg
 *.egg-info
 *.lock
+!poetry.lock
 *.py[cod]
 *.snap
 *.tac

@@ -54,3 +54,120 @@ exclude = '''
   )/
 )
 '''
+
+[tool.poetry]
+name = "matrix-synapse"
+version = "1.29.0rc1"
+description = "Reference homeserver for the Matrix decentralised comms protocol"
+authors = ["Matrix Foundation <team@matrix.org>"]
+license = "APLv2"
+readme = "README.rst"
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Communications :: Chat",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+]
+packages = [
+    { include = "synapse" },
+    { include = "synmark" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.5"
+# we use attr.validators.deep_iterable, which arrived in 19.1.0 (Note: Fedora 31 only
+# has 19.1, so if we want to upgrade we should wait until 33 is out in November.)
+attrs = ">=19.1.0"
+bcrypt = ">=3.1.0"
+bleach = ">=1.4.3"
+canonicaljson = ">=1.4.0"
+frozendict = ">=1"
+idna = ">=2.5"
+Jinja2 = ">=2.9"
+jsonschema = ">=2.5.1"
+msgpack = ">=0.5.2"
+netaddr = ">=0.7.18"
+phonenumbers = ">=8.2.0"
+pillow = ">=4.3.0"
+# we use GaugeHistogramMetric, which was added in prom-client 0.4.0.
+prometheus_client = ">=0.4.0"
+pyasn1 = ">=0.1.9"
+pyasn1-modules = ">=0.0.7"
+pymacaroons = ">=0.13.0"
+pynacl = ">=1.2.1"
+# Twisted has required pyopenssl 16.0 since about Twisted 16.6.
+pyopenssl = ">=16.0.0"
+pyyaml = ">=3.11"
+# validating SSL certs for IP addresses requires service_identity 18.1.
+service_identity = ">=18.1.0"
+# we use the type definitions added in signedjson 1.1.
+signedjson = ">=1.1.0"
+sortedcontainers = ">=1.4.4"
+treq = ">=15.1"
+# Twisted 18.9 introduces some logger improvements that the structured logger utilises
+Twisted = ">=18.9.0"
+typing-extensions = ">=3.7.4"
+unpaddedbase64 = ">=1.1.0"
+
+matrix-synapse-ldap3 = {version = ">=0.1", optional = true}
+psycopg2 = {version = ">=2.8", markers = "platform_python_implementation != 'PyPy'", optional = true}
+psycopg2cffi = {version = ">=2.8", markers = "platform_python_implementation == 'PyPy'", optional = true}
+psycopg2cffi-compat = {version = "1.1", markers = "platform_python_implementation == 'PyPy'", optional = true}
+txacme = {version = ">=0.9.2", optional = true}
+# txacme depends on eliot. Eliot 1.8.0 is incompatible with
+# python 3.5.2, as per https://github.com/itamarst/eliot/issues/418
+eliot = [
+    {version = "*", python = "^3.5.3", optional = true },
+    {version = "<1.8.0", python = "<3.5.3", optional = true }
+]
+pysaml2 = [
+    {version = ">=4.5.0,<6.4.0", python = "<3.6", optional = true},
+    {version = ">=0.14.0", python = ">=3.6", optional = true}
+]
+authlib = {version = ">=0.14.0", optional = true}
+# systemd-python is necessary for logging to the systemd journal via
+# `systemd.journal.JournalHandler`, as is documented in
+# `contrib/systemd/log_config.yaml`.
+systemd-python = {version = ">=231", optional = true}
+lxml = {version = ">=3.5.0", optional = true}
+sentry-sdk = {version = ">=0.7.2", optional = true}
+opentracing = {version = ">=2.2.0", optional = true}
+jaeger-client = {version = ">=1.6.4", optional = true}
+pyjwt = {version = ">=1.6.4", optional = true}
+txredisapi = {version = ">=1.4.7", optional = true}
+# hiredis is not a *strict* dependency, but it makes things much faster.
+# (if it is not installed, we fall back to slow code.)
+hiredis = {version = "*", optional = true}
+mypy = {version = "0.812", optional = true}
+mypy-zope = {version = "0.2.11", optional = true}
+
+[tool.poetry.dev-dependencies]
+black = {version = "20.8b1", python = "^3.6"}
+flake8 = "*"
+flake8-comprehensions = "*"
+isort = {version = "5.7.0", python = "^3.6"}
+mock = ">=2.0"
+parameterized = ">=0.7.0"
+
+[tool.poetry.extras]
+acme = ["txacme", "eliot"]
+jwt = ["pyjwt"]
+matrix-synapse-ldap3 = ["matrix-synapse-ldap3"]
+mypy = ["mypy", "mypy-zope"]
+oidc = ["authlib"]
+opentracing = ["jaeger-client", "opentracing"]
+postgres = ["psycopg2", "psycopg2cffi", "psycopg2cffi-compat"]
+redis = ["txredisapi", "hiredis"]
+saml2 = ["pysaml2"]
+sentry = ["sentry-sdk"]
+systemd = ["systemd-python"]
+url_preview = ["lxml"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
